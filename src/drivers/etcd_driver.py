@@ -49,7 +49,7 @@ class ETCDPropertyDefenition:
     default_value: str = None
 
 @dataclass
-class EtcdConfigurations:
+class EtcdOptions:
     """
         This class holds all the "client custom configurations" of the etcd.
 
@@ -75,14 +75,14 @@ class ETCDConnectionConfigurations:
     password: Any | None = None 
     grpc_options: Any | None = None
 
-class ETCDConfig:
-    default_configs: EtcdConfigurations = EtcdConfigurations(
+class ETCDDriver:
+    default_configs: EtcdOptions = EtcdOptions(
         environment_params={},
         module_configs=ETCDModuleOptions()
     )
 
     etcd: Etcd3Client
-    proccessed_configs: EtcdConfigurations
+    proccessed_configs: EtcdOptions
     # _etcd_watcher: Watcher
     env_params: dict[str, Any]
 
@@ -90,7 +90,7 @@ class ETCDConfig:
     def __init__(
         self,
         connection_configurations: ETCDConnectionConfigurations,
-        user_defined_configs: EtcdConfigurations
+        user_defined_configs: EtcdOptions
     ) -> None:
         try:
             self.etcd = etcd3.client(**connection_configurations.__dict__)
@@ -108,7 +108,7 @@ class ETCDConfig:
         except Exception as e:
             print('Exception occurred in ETCDConfig constructor', e)
 
-    def _override_default_configs(self, user_defined_configs: EtcdConfigurations) -> EtcdConfigurations:
+    def _override_default_configs(self, user_defined_configs: EtcdOptions) -> EtcdOptions:
         """
             Overrides the default configurations with those the user specified
             args:
@@ -118,7 +118,7 @@ class ETCDConfig:
         user_defined_dict: dict[str, Any] = asdict(user_defined_configs)
 
         merged_dict: dict[str, Any] = { **default_configs_dict, **user_defined_dict }
-        return from_dict(data_class=EtcdConfigurations, data=merged_dict)
+        return from_dict(data_class=EtcdOptions, data=merged_dict)
 
     def _override_sys_object(self, property_name: str, val_to_override: Any) -> None:
         """

@@ -9,9 +9,9 @@ from configs.s3_config import S3Config
 from constants.apm_constants import TransactionTypes, SpanTypes
 from constants.app_constatns import DEFAULT_RECEIVE_DOCX_QUEUE_NAME
 from constants.rabbit_constants import EnvKeys as RabbitEnvKeys
-from configs.apm_config import apm, create_transaction, trace_function
-from configs.etcd_config import ETCDConfig, ETCDConnectionConfigurations, ETCDModuleOptions, EtcdConfigurations
-from configs.rabbit_config import RabbitDriver, RabbitQueue
+from configs.apm_config import create_transaction, trace_function
+from drivers.etcd_driver import ETCDDriver, ETCDConnectionConfigurations, ETCDModuleOptions, EtcdOptions
+from drivers.rabbit_driver import RabbitDriver, RabbitQueue
 from handlers.rabbit_handlers import receive_docx_handler
 
 def main() -> None:
@@ -38,12 +38,12 @@ def service_initialization(transaction: Transaction=None) -> None:
     """
         Initializing the connections the service uses
     """
-    ETCDConfig(
+    ETCDDriver(
         transaction=transaction,
         connection_configurations=ETCDConnectionConfigurations(
             host=os.getenv("ETCD_HOST")
         ),
-        user_defined_configs=EtcdConfigurations(
+        user_defined_configs=EtcdOptions(
             module_configs=ETCDModuleOptions(
                 override_sys_object=True,
                 gen_keys=True

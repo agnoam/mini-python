@@ -10,7 +10,7 @@ from pika.spec import Basic, BasicProperties
 from pika.channel import Channel
 from pika.credentials import ExternalCredentials, PlainCredentials
 
-from .apm_config import trace_function
+from configs.apm_config import trace_function
 from constants.apm_constants import SpanTypes
 from constants.rabbit_constants import EnvKeys
 
