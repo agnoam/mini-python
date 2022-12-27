@@ -65,6 +65,7 @@ def service_initialization(transaction: Transaction=None) -> None:
 
     RabbitDriver.initialize_rabbitmq(
         transaction=transaction,
+        virtual_host='/dev', # Optional
         credentials=PlainCredentials(username, password), # Optional
         queues_configurations={
             RECIEVED_DOCX_QUEUE: RabbitQueue(callback=receive_docx_handler)

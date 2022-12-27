@@ -56,14 +56,15 @@ class RabbitDriver:
         queues_configurations: dict[str, RabbitQueue],
         host: str = None,
         port: int = None,
+        virtual_host: str = '/',
         credentials: PlainCredentials | ExternalCredentials = None
     ) -> None:
         RabbitDriver.queues_configurations = queues_configurations
-        RabbitDriver.__initialize_connection(host, port, credentials)
+        RabbitDriver.__initialize_connection(host, port, virtual_host, credentials)
 
     @staticmethod
     def __initialize_connection(
-        host: str = None, port: int = None, 
+        host: str = None, port: int = None, virtual_host: str = '/',
         credentials: PlainCredentials | ExternalCredentials = None
     ) -> None:
         print('__initialize_connection() executing')
@@ -72,7 +73,7 @@ class RabbitDriver:
             host = str(os.getenv(EnvKeys.RABBIT_HOST))
         assert host is not None, 'RabbitMQ host must be provided'
 
-        parameters: ConnectionParameters = pika.ConnectionParameters(host, credentials=credentials)
+        parameters: ConnectionParameters = pika.ConnectionParameters(host, virtual_host=virtual_host, credentials=credentials)
 
         # Priority of port: manually set (arg), ENV, _DEFAULT
         if port is None:
